@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import calendarApi from '../api/calendarApi'
+import { onLogoutCalendar } from "../store"
 import { onLogin, onChecking, onLogout, clearErrorMessage } from '../store/auth/authSlice'
 import { useLocalUser } from "./useLocalUser"
 
@@ -11,14 +12,12 @@ export const useAuthStore = () => {
 
     const { uid, token, name, onSetLocalUser, clear } = useLocalUser()
 
-    const startLogin = async ({email, password, username}) => {
-        console.log({email,password, name: username})
+    const startLogin = async ({email, password}) => {
         dispatch(onChecking())
         try {
-            const {data} = await calendarApi.post('/auth/new', { email, password })
+            const {data} = await calendarApi.post('/auth', { email, password })
             onSetLocalUser(data)
-            
-            dispatch(onLogin({name:data.name, uid: data.uid}))
+            dispatch(onLogin({name: data.name, uid: data.uid}))
         } catch (error) {
             dispatch(onLogout(error.response.data?.msg  || 'Error'))
             startClearErrorMessage()
@@ -26,12 +25,11 @@ export const useAuthStore = () => {
     }
 
     const startRegister = async ({email, password, username}) => {
-        console.log({email,password, name: username})
         dispatch(onChecking())
         try {
-            const {data} = await calendarApi.post('/auth/new', { email, password })
+            const {data} = await calendarApi.post('/auth/new', { email, password, name: username })
             onSetLocalUser(data)
-            dispatch(onLogin({name:data.name, uid: data.uid}))
+            dispatch(onLogin({name: data.name, uid: data.uid}))
         } catch (error) {
             dispatch(onLogout(error.response.data?.msg  || 'Error'))
             startClearErrorMessage()
@@ -54,6 +52,7 @@ export const useAuthStore = () => {
 
     const startLogout = () => {
         dispatch(onLogout())
+        dispatch(onLogoutCalendar())
         clear()
     }
 

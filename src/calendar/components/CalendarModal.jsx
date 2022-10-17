@@ -15,7 +15,6 @@ import { useCalendarStore, useUiStore } from '../../hooks';
 import es from 'date-fns/locale/es';
 registerLocale( 'es', es );
 
-
 const customStyles = {
     content: {
       top: '50%',
@@ -97,8 +96,6 @@ export const CalendarModal = () => {
         }
         
         if ( formValues.title.length <= 0 ) return;
-        
-        console.log(formValues);
 
         // TODO: 
         await startSavingEvent( formValues );

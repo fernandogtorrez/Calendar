@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -6,24 +6,25 @@ import { Navbar, CalendarEvent, CalendarModal, FabAddNew, FabDelete} from '../';
 
 import { localizer, getMessagesES } from '../../helpers';
 import { useUiStore, useCalendarStore } from '../../hooks';
+import { useAuthStore } from '../../hooks/useAuthStore';
 
 
 export const CalendarPage = () => {
 
   const { openDateModal } = useUiStore();
-  const { events, setActiveEvent } = useCalendarStore();
-
+  const { events, setActiveEvent, startLoadingEvents } = useCalendarStore();
+  const { user } = useAuthStore()
   // Seteamos una vista por default, utilizamos localStorage.
   const [ lastView, setLastView ] = useState(localStorage.getItem('lastView') || 'week' );
 
   // Esta funcion la seteamos en el calendario y es donde podemos capturar los eventos del mismo.
-  const eventStyleGetter = ( event, start, end, isSelected ) => {
+  const eventStyleGetter = ( event ) => {
     // Mirar el clg.
     // console.log({event, start, end, isSelected})
-
+    const isMyUser = user.uid === event.user.uid
     // Podemos cambiar el estilo del evento creado.
     const style = {
-      backgroundColor: '#347CF7',
+      backgroundColor: isMyUser ? '#347CF7' : '#465660',
       borderRadius: '0px',
       opacity: 0.8,
       color: 'white'
@@ -50,7 +51,9 @@ export const CalendarPage = () => {
     setLastView( event )
   }
 
-
+  useEffect(() => {
+    startLoadingEvents()
+  }, []);
 
   return (
     <>

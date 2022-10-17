@@ -10,7 +10,7 @@ import { useLocalUser } from '../hooks/useLocalUser';
 export const AppRouter = () => {
 
     const { checkAuthToken, status } = useAuthStore()
-    const {localUser} = useLocalUser
+    const {localUser} = useLocalUser()
 
     useEffect(() => {
         checkAuthToken()
@@ -26,16 +26,15 @@ export const AppRouter = () => {
                         <>
                             <Route path="/auth/login" element={ <LoginPage /> } />
                             <Route path="/auth/register" element={ <RegisterPage /> } />
+                            <Route path="/*" element={ <Navigate to="/auth/login" /> } />
                         </>
                     )
                     : 
                     <>
-                        <Route path="/*" element={ <CalendarPage /> } />
-                        <Route path="/*" element={ <Navigate to="/auth/login" /> } />
+                        <Route path="/" element={ <CalendarPage /> } />
+                        <Route path="/*" element={ <Navigate to="/" /> } />
                     </>
             }
-
-            
         </Routes>
     )
 }

@@ -5,7 +5,6 @@ import './authLayout.css';
 
 export const AuthLayout = ({ children, title }) => {
 
-
   const {errorMessage} = useAuthStore()
 
   useEffect(() => {
